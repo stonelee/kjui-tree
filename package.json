@@ -1,0 +1,17 @@
+{
+    "name": "tree",
+    "version": "0.0.1",
+    "root": "kjui",
+    "description": "tree",
+    "author": "Stone Lee <istonelee@gmail.com> (http://stonelee.info)",
+    "dependencies": {
+        "$": "$",
+        "widget": "arale/widget/1.0.2/widget",
+        "templatable": "arale/widget/1.0.2/templatable",
+        "handlebars": "gallery/handlebars/1.0.0/handlebars"
+    },
+    "tests": ["tree"],
+    "output": {
+        "tree.js": "."
+    }
+}
