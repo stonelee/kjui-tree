@@ -11,14 +11,14 @@
 
 <script>
 seajs.use(['tree'], function(Tree) {
-  new Tree({
+  window.tree = new Tree({
     element: '#demo1',
     title: 'tree',
     url: './tree.json',
     multiSelect: true,
     height: 200,
-    onClick: function(){
-      console.log('d');
+    onSelect: function(target, data) {
+      console.log(target, data);
     }
   }).render();
 });

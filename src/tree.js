@@ -143,6 +143,7 @@ define(function(require, exports, module) {
       }
 
       var row = handlebars.compile(rowTpl)({
+        id: data.id,
         treeColumnWidth: treeColumnWidth,
         icons: icons,
         name: data.name,
@@ -181,7 +182,7 @@ define(function(require, exports, module) {
         }
 
         if ($target.attr('data-role') != 'check') {
-          this.trigger('click', $target, data);
+          this.trigger('select', $target, data);
         }
       }
     },
@@ -222,6 +223,29 @@ define(function(require, exports, module) {
         }
         $row.removeClass('grid-row-is-selected');
       }
+    },
+
+    select: function(id) {
+      //暂不支持多选
+      if (this.get('multiSelect')) return;
+
+      var $row = this.$('.grid-row[data-id=' + id + ']');
+
+      this.selected = $row;
+      $row.addClass('grid-row-is-selected').siblings().removeClass('grid-row-is-selected');
+
+      //滚动到所选内容
+      var index = $row.parent().children().index($row);
+      this.$('.grid-bd').scrollTop($row.height() * index);
+
+      var data = $row.data('data');
+      this.trigger('select', $row, data);
+    },
+
+    refresh: function() {
+      //刷新往往不会改变url
+      var url = this.get('url');
+      this._onRenderUrl(url);
     }
 
   });

@@ -61,17 +61,21 @@ render: function(value) {
 返回当前选中的行，类型为jquery对象，可以使用 `$tr.data('data')` 得到该行对应的数据
 
 默认为单选，返回的是jquery对象。
-如果设置needCheckbox则为多选，返回的是数组
+如果设置multiSelect则为多选，返回的是数组
 
 ## 方法
 
+### select `id`
+
+选中id为传入参数的项，只能在单选树中使用
+
 ### refresh ` `
 
-TODO:刷新数据
+刷新数据，会导致选中效果失效
 
 ## 事件
 
-### click `target, data`
+### select `target, data`
 
 在树中点击触发
 

@@ -12,12 +12,12 @@
 
 <script>
 seajs.use(['tree'], function(Tree) {
-  new Tree({
+  window.tree = new Tree({
     element: '#demo1',
     title: 'tree',
     url: './tree.json',
     height: 200,
-    onClick: function(target, data) {
+    onSelect: function(target, data) {
       console.log(target, data);
     }
   }).render();

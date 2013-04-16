@@ -1,4 +1,4 @@
-<tr class="grid-row" {{#if expanded}}data-status="expanded"{{/if}} {{#if leaf}}data-type="leaf"{{/if}}>
+<tr class="grid-row" data-id="{{id}}" {{#if expanded}}data-status="expanded"{{/if}} {{#if leaf}}data-type="leaf"{{/if}}>
   <td class="grid-cell"{{#if treeColumnWidth}} width="{{treeColumnWidth}}"{{/if}}>
     {{#each icons}}<i class="icon icon-tree-{{this}}"></i>{{/each}}{{name}}
   </td>
