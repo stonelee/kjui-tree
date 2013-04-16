@@ -15,6 +15,8 @@ define(function(require, exports, module) {
       title: '',
       fields: [],
 
+      multiSelect: false,
+
       width: 0,
       height: 0
     },
@@ -45,10 +47,16 @@ define(function(require, exports, module) {
 
       this.element.html(html);
 
-      this._tree = this.element.find('.grid-no-border tbody');
+      this._tree = this.$('.grid-no-border tbody');
       this._loopRow(data, []);
 
-      this.selected = null;
+      //已选择的行
+      if (this.get('multiSelect')) {
+        $('.icon-tree-leaf,.icon-tree-folder').before($('<input type="checkbox" data-role="check">'));
+        this.selected = [];
+      } else {
+        this.selected = null;
+      }
 
       //自适应高度
       if (!gridHeight) {
@@ -148,7 +156,8 @@ define(function(require, exports, module) {
     },
 
     events: {
-      'click .grid-row': '_click'
+      'click .grid-row': '_click',
+      'click [data-role=check]': '_check'
     },
 
     _click: function(e) {
@@ -161,19 +170,21 @@ define(function(require, exports, module) {
         this._toggle($target);
       } else {
         //点击事件
-        if (this.selected && this.selected.data('data').id === data.id) {
-          this.selected = null;
-          $row.removeClass('grid-row-is-selected');
-        } else {
-          this.selected = $row;
-          $row.addClass('grid-row-is-selected').siblings().removeClass('grid-row-is-selected');
+        if (!this.get('multiSelect')) {
+          if (this.selected && this.selected.data('data').id === data.id) {
+            this.selected = null;
+            $row.removeClass('grid-row-is-selected');
+          } else {
+            this.selected = $row;
+            $row.addClass('grid-row-is-selected').siblings().removeClass('grid-row-is-selected');
+          }
         }
 
-        //参数为点击项对应节点，数据
-        this.trigger('click', $target, data);
+        if ($target.attr('data-role') != 'check') {
+          this.trigger('click', $target, data);
+        }
       }
     },
-
     _toggle: function(node) {
       var index = node.parent().children().index(node);
       var row = node.parents('tr');
@@ -193,6 +204,24 @@ define(function(require, exports, module) {
         seajs.console('不合法的class');
       }
       node.attr('class', cls);
+    },
+
+    _check: function(e) {
+      var $target = $(e.target);
+      var $row = $target.parents('tr');
+
+      if ($target.prop('checked')) {
+        this.selected.push($row);
+        $row.addClass('grid-row-is-selected');
+      } else {
+        var id = $row.data('data').id;
+        for (var i = this.selected.length - 1; i >= 0; i--) {
+          if (this.selected[i].data('data').id === id) {
+            this.selected.splice(i, 1);
+          }
+        }
+        $row.removeClass('grid-row-is-selected');
+      }
     }
 
   });

@@ -15,6 +15,7 @@ seajs.use(['tree'], function(Tree) {
     element: '#demo1',
     title: 'tree',
     url: './tree.json',
+    multiSelect: true,
     height: 200,
     onClick: function(){
       console.log('d');

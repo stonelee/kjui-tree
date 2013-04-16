@@ -38,9 +38,9 @@ render: function(value) {
 }
 ```
 
-### needCheckbox `Boolean`
+### multiSelect `Boolean`
 
-TODO: 默认为false，如果设为true则出现多选框列
+默认为false，如果设为true则出现多选框，这时可以进行多选
 
 ### width `Number`
 
