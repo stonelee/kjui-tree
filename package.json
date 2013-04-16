@@ -1,16 +1,22 @@
 {
     "name": "tree",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "root": "kjui",
     "description": "tree",
     "author": "Stone Lee <istonelee@gmail.com> (http://stonelee.info)",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/stonelee/kjui-tree.git"
+    },
+    "bugs": {
+        "url": "https://github.com/stonelee/kjui-tree/issues"
+    },
     "dependencies": {
         "$": "$",
         "widget": "arale/widget/1.0.2/widget",
-        "templatable": "arale/widget/1.0.2/templatable",
-        "handlebars": "gallery/handlebars/1.0.0/handlebars"
+        "handlebars": "gallery/handlebars/1.0.0/handlebars",
+        "underscore": "gallery/underscore/1.4.2/underscore"
     },
-    "tests": ["tree"],
     "output": {
         "tree.js": "."
     }
