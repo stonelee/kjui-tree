@@ -16,6 +16,7 @@ define(function(require, exports, module) {
       fields: [],
 
       multiSelect: false,
+      cascade: false,
 
       width: 0,
       height: 0
@@ -49,6 +50,7 @@ define(function(require, exports, module) {
 
       this._tree = this.$('.grid-no-border tbody');
       this._loopRow(data, []);
+      this._processData();
 
       //已选择的行
       if (this.get('multiSelect')) {
@@ -151,14 +153,75 @@ define(function(require, exports, module) {
         leaf: data.children.length === 0 ? true : false,
         grids: grids
       });
-      $row = $(row);
+      var $row = $(row);
       $row.data('data', data);
       this._tree.append($row);
     },
 
+    //将关系保存在data中
+    _processData: function() {
+      var self = this;
+      this.$('.grid-row[data-role=expander]').each(function(index, row) {
+        var $row = $(row);
+        $.each($row.data('data').children, function(i, data) {
+          self.$('.grid-row[data-id=' + data.id + ']').data('parent', $row);
+        });
+      });
+    },
+
     events: {
+      'click [class$=-minus],[class$=-plus]': '_toggle',
       'click .grid-row': '_click',
       'click [data-role=check]': '_check'
+    },
+
+    _toggle: function(e) {
+      var $target = $(e.target);
+      var $row = $target.parents('tr');
+      if ($row.attr('data-status') == 'expanded') {
+        this.shrink($row);
+      } else {
+        this.expand($row);
+      }
+    },
+    expand: function($row) {
+      this._show($row);
+      this._changeIcon($row, 'plus', 'minus');
+      $row.attr('data-status', 'expanded');
+    },
+    shrink: function($row) {
+      this._hide($row);
+      this._changeIcon($row, 'minus', 'plus');
+      $row.removeAttr('data-status');
+    },
+
+    _changeIcon: function($row, old, other) {
+      var $i = $row.find('[class$=-' + old + ']');
+      var cls = $i.attr('class');
+      cls = cls.replace(old, other);
+      $i.attr('class', cls);
+    },
+    _show: function($row) {
+      var self = this;
+      $.each($row.data('data').children, function(index, data) {
+        var $r = self.$('.grid-row[data-id=' + data.id + ']');
+        console.log('show:' + $r.attr('data-id'));
+        $r.show();
+        if ($r.attr('data-status') == 'expanded') {
+          self._show($r);
+        }
+      });
+    },
+    _hide: function($row) {
+      var self = this;
+      $.each($row.data('data').children, function(index, data) {
+        var $r = self.$('.grid-row[data-id=' + data.id + ']');
+        console.log('hide:' + $r.attr('data-id'));
+        $r.hide();
+        if ($r.attr('data-role') == 'expander' && $r.attr('data-status') == 'expanded') {
+          self._hide($r);
+        }
+      });
     },
 
     _click: function(e) {
@@ -166,11 +229,7 @@ define(function(require, exports, module) {
       var $row = $target.parents('tr');
       var data = $row.data('data');
 
-      if (/minus|plus/.test($target.attr('class'))) {
-        //打开折叠
-        this._toggle($target);
-      } else {
-        //点击事件
+      if (!/minus|plus/.test($target.attr('class'))) {
         if (!this.get('multiSelect')) {
           if (this.selected && this.selected.data('data').id === data.id) {
             this.selected = null;
@@ -182,29 +241,9 @@ define(function(require, exports, module) {
         }
 
         if ($target.attr('data-role') != 'check') {
-          this.trigger('select', $target, data);
+          this.trigger('click', $target, data);
         }
       }
-    },
-    _toggle: function(node) {
-      var index = node.parent().children().index(node);
-      var row = node.parents('tr');
-
-      var cls = node.attr('class');
-      if (/minus/.test(cls)) {
-        cls = cls.replace('minus', 'plus');
-
-        toggle('hide', row, index);
-        row.removeAttr('data-status');
-      } else if (/plus/.test(cls)) {
-        cls = cls.replace('plus', 'minus');
-
-        toggle('show', row, index);
-        row.attr('data-status', 'expanded');
-      } else {
-        seajs.console('不合法的class');
-      }
-      node.attr('class', cls);
     },
 
     _check: function(e) {
@@ -225,21 +264,29 @@ define(function(require, exports, module) {
       }
     },
 
-    select: function(id) {
+    select: function($row) {
       //暂不支持多选
       if (this.get('multiSelect')) return;
 
-      var $row = this.$('.grid-row[data-id=' + id + ']');
+      //父节点张开
+      var parentRow = $row.data('parent');
+      while (parentRow) {
+        if (parentRow.attr('data-status') != 'expanded') {
+          this.expand(parentRow);
+        }
+        parentRow = parentRow.data('parent');
+      }
 
+      //选中
       this.selected = $row;
       $row.addClass('grid-row-is-selected').siblings().removeClass('grid-row-is-selected');
 
       //滚动到所选内容
-      var index = $row.parent().children().index($row);
+      var index = $row.parent().children(':visible').index($row);
       this.$('.grid-bd').scrollTop($row.height() * index);
 
       var data = $row.data('data');
-      this.trigger('select', $row, data);
+      this.trigger('click', $row, data);
     },
 
     refresh: function() {
@@ -252,24 +299,15 @@ define(function(require, exports, module) {
 
   module.exports = Tree;
 
-  function toggle(type, row, index) {
-    var nextRow = row.next();
-    var nextNode = nextRow.children().eq(0).children().eq(index);
-    if (nextNode.hasClass('icon-tree-elbow-line') || nextNode.hasClass('icon-tree-elbow-empty')) {
-      nextRow[type]();
-
-      if (type == 'show') {
-        if (nextRow.attr('data-type') == 'leaf') {
-          toggle(type, nextRow, index);
-        } else {
-          if (nextRow.attr('data-status') == 'expanded') {
-            toggle(type, nextRow, index);
-          }
-        }
-      } else {
-        toggle(type, nextRow, index);
+  //var children = [];
+  //getChildren($row.data('data'),children);
+  function getChildren(data, children) {
+    $.each(data.children, function(index, d) {
+      children.push(d.id);
+      if (d.children.length > 0) {
+        getChildren(d, children);
       }
-    }
+    });
   }
 
 });

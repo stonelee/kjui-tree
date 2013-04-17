@@ -24,3 +24,32 @@ seajs.use(['tree'], function(Tree) {
 });
 </script>
 ````
+
+## select
+
+````iframe:300
+<div id="demo1"></div>
+<button id="select521">select 521</button>
+
+<script>
+seajs.use(['$','tree'], function($,Tree) {
+  var tree = window.tree = new Tree({
+    element: '#demo1',
+    title: 'tree',
+    url: './tree.json',
+    height: 200,
+    onSelect: function(target, data) {
+      console.log(target, data);
+    }
+  }).render();
+
+  $('#select521').click(function(){
+    var $tr = tree.$('[data-id=521]');
+    tree.select($tr);
+  })
+
+});
+</script>
+````
+
+## 级联选择

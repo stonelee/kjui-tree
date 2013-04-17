@@ -75,9 +75,9 @@ render: function(value) {
 
 ## 事件
 
-### select `target, data`
+### click `target, data`
 
-在树中点击触发
+在树中点击或者使用select方法触发，收缩展开操作以及选中checkbox不会触发
 
 * `target` 被点击的元素，被包装成了jquery对象
 * `data` 该行对应的数据
