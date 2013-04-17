@@ -25,7 +25,7 @@ seajs.use(['tree'], function(Tree) {
 </script>
 ````
 
-## select
+## 选中某一行
 
 ````iframe:300
 <div id="demo1"></div>
@@ -53,3 +53,23 @@ seajs.use(['$','tree'], function($,Tree) {
 ````
 
 ## 级联选择
+
+````iframe:300
+<div id="demo1"></div>
+
+<script>
+seajs.use(['tree'], function(Tree) {
+  window.tree = new Tree({
+    element: '#demo1',
+    title: 'tree',
+    url: './tree.json',
+    multiSelect: true,
+    cascade: true,
+    height: 200,
+    onSelect: function(target, data) {
+      console.log(target, data);
+    }
+  }).render();
+});
+</script>
+````

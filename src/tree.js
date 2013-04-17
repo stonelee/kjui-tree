@@ -166,6 +166,20 @@ define(function(require, exports, module) {
         $.each($row.data('data').children, function(i, data) {
           self.$('.grid-row[data-id=' + data.id + ']').data('parent', $row);
         });
+
+        var children = [];
+        self._getChildren($row.data('data'), children);
+        $row.data('children', children);
+      });
+    },
+    _getChildren: function(data, children) {
+      var self = this;
+      $.each(data.children, function(index, d) {
+        var $row = self.$('.grid-row[data-id=' + d.id + ']');
+        children.push($row);
+        if (d.children.length > 0) {
+          self._getChildren(d, children);
+        }
       });
     },
 
@@ -205,7 +219,6 @@ define(function(require, exports, module) {
       var self = this;
       $.each($row.data('data').children, function(index, data) {
         var $r = self.$('.grid-row[data-id=' + data.id + ']');
-        console.log('show:' + $r.attr('data-id'));
         $r.show();
         if ($r.attr('data-status') == 'expanded') {
           self._show($r);
@@ -216,7 +229,6 @@ define(function(require, exports, module) {
       var self = this;
       $.each($row.data('data').children, function(index, data) {
         var $r = self.$('.grid-row[data-id=' + data.id + ']');
-        console.log('hide:' + $r.attr('data-id'));
         $r.hide();
         if ($r.attr('data-role') == 'expander' && $r.attr('data-status') == 'expanded') {
           self._hide($r);
@@ -247,20 +259,56 @@ define(function(require, exports, module) {
     },
 
     _check: function(e) {
+      var self = this;
       var $target = $(e.target);
       var $row = $target.parents('tr');
 
       if ($target.prop('checked')) {
-        this.selected.push($row);
-        $row.addClass('grid-row-is-selected');
-      } else {
-        var id = $row.data('data').id;
-        for (var i = this.selected.length - 1; i >= 0; i--) {
-          if (this.selected[i].data('data').id === id) {
-            this.selected.splice(i, 1);
-          }
+        this._checkRow($row);
+        if (this.get('cascade') && $row.attr('data-role') == 'expander') {
+          $.each($row.data('children'), function(index, $r) {
+            self.check($r);
+          });
         }
-        $row.removeClass('grid-row-is-selected');
+      } else {
+        this._unCheckRow($row);
+        if (this.get('cascade') && $row.attr('data-role') == 'expander') {
+          $.each($row.data('children'), function(index, $r) {
+            self.unCheck($r);
+          });
+        }
+      }
+    },
+    _checkRow: function($row) {
+      this.selected.push($row);
+      $row.addClass('grid-row-is-selected');
+    },
+    _unCheckRow: function($row) {
+      var id = $row.data('data').id;
+      for (var i = this.selected.length - 1; i >= 0; i--) {
+        if (this.selected[i].data('data').id === id) {
+          this.selected.splice(i, 1);
+        }
+      }
+      $row.removeClass('grid-row-is-selected');
+    },
+
+    check: function($row) {
+      var $check = $row.find('[data-role=check]');
+      if (!$check) return;
+
+      if (!$check.prop('checked')) {
+        this._checkRow($row);
+        $check.prop('checked', true);
+      }
+    },
+    unCheck: function($row) {
+      var $check = $row.find('[data-role=check]');
+      if (!$check) return;
+
+      if ($check.prop('checked')) {
+        this._unCheckRow($row);
+        $check.prop('checked', false);
       }
     },
 
@@ -298,16 +346,5 @@ define(function(require, exports, module) {
   });
 
   module.exports = Tree;
-
-  //var children = [];
-  //getChildren($row.data('data'),children);
-  function getChildren(data, children) {
-    $.each(data.children, function(index, d) {
-      children.push(d.id);
-      if (d.children.length > 0) {
-        getChildren(d, children);
-      }
-    });
-  }
 
 });

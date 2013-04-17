@@ -42,6 +42,10 @@ render: function(value) {
 
 默认为false，如果设为true则出现多选框，这时可以进行多选
 
+### cascade `Boolean`
+
+默认为false，如果设为true可以级联选择
+
 ### width `Number`
 
 整个tree的宽度，默认扩展到父元素宽度
@@ -65,9 +69,25 @@ render: function(value) {
 
 ## 方法
 
-### select `id`
+### select `$row`
 
-选中id为传入参数的项，只能在单选树中使用
+将$row选中，只能在单选树中使用
+
+### expand `$row`
+
+将$row展开
+
+### shrink `$row`
+
+将$row收缩
+
+### check `$row`
+
+多选树中使用，使得该行被选中
+
+### unCheck `$row`
+
+多选树中使用，使得该行被取消选中
 
 ### refresh ` `
 
@@ -87,3 +107,33 @@ render: function(value) {
 组件渲染完毕后触发，用来对默认样式进行动态更改
 
 * `tree` 组件实例
+
+## `$row.data`
+
+### data `  `
+
+该行对应的data
+
+### parent ` `
+
+该行的父节点
+
+### children ` `
+
+该行所有层级的子节点组成的数组
+
+## 节点属性
+
+### data-id `tr`
+
+该行对应的id
+
+### data-status `tr`
+
+非叶子节点是否已展开，如果已展开为`expanded`
+
+### data-role `tr|input`
+
+* 非叶子节点 `expander`
+* 叶子节点 `leaf`
+* 多选框 `check`
