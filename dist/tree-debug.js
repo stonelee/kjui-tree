@@ -1,167 +1,391 @@
-define("kjui/tree/0.0.1/tree-debug", ["$-debug", "arale/widget/1.0.2/widget-debug", "arale/base/1.0.1/base-debug", "arale/class/1.0.0/class-debug", "arale/events/1.0.0/events-debug", "gallery/handlebars/1.0.0/handlebars-debug"], function(require, exports, module) {
+define("kjui/tree/1.0.0/tree-debug", ["$-debug", "arale/widget/1.0.2/widget-debug", "arale/base/1.0.1/base-debug", "arale/class/1.0.0/class-debug", "arale/events/1.0.0/events-debug", "gallery/handlebars/1.0.0/handlebars-debug", "gallery/underscore/1.4.2/underscore-debug"], function(require, exports, module) {
   var $ = require('$-debug'),
     Widget = require('arale/widget/1.0.2/widget-debug'),
-    handlebars = require('gallery/handlebars/1.0.0/handlebars-debug');
+    handlebars = require('gallery/handlebars/1.0.0/handlebars-debug'),
+    _ = require('gallery/underscore/1.4.2/underscore-debug');
 
-  var rowTpl = '<tr class="grid-row" {{#if expanded}}data-status="expanded"{{/if}} {{#if leaf}}data-type="leaf"{{/if}}> <td class="grid-cell"> {{#each icons}}<i class="icon icon-tree-{{this}}"></i>{{/each}}{{name}} </td> {{#each grids}} <td class="grid-cell">{{this}}</td> {{/each}} </tr>',
-    headerTpl = '{{#if headers}} <thead class="grid-hd unselectable"> <tr> {{#each headers}} <td class="grid-hd-cell"><span>{{this}}</span></td> {{/each}} </tr> </thead> {{/if}}';
+  var treeTpl = '<div class="mod" style="width:{{width}}px;"> {{#if title}} <div class="hd unselectable"> <span class="hd-title">{{title}}</span> </div> {{/if}} <div class="bd">{{#if fields}} <div class="grid-hd unselectable"> <table><thead><tr> {{#each fields}} <th class="grid-cell" width="{{width}}"> <span>{{header}}</span> </th> {{/each}} </tr></thead></table> </div> {{/if}}<div class="grid-bd"{{#if height}} style="height:{{height}}px"{{/if}}> <table class="grid-no-border"><tbody></tbody></table> </div></div> </div>',
+    rowTpl = '<tr class="grid-row" data-id="{{id}}" {{#if expanded}}data-status="expanded"{{/if}} {{#if leaf}}data-role="leaf"{{else}}data-role="expander"{{/if}}> <td class="grid-cell"{{#if treeColumnWidth}} width="{{treeColumnWidth}}"{{/if}}> {{#each icons}}<i class="icon icon-tree-{{this}}"></i>{{/each}}<span data-role="text" style="cursor:pointer;" class="unselectable">{{name}}</span> </td> {{#each grids}} <td class="grid-cell" width="{{width}}"{{#if align}} style="text-align:{{align}};"{{/if}}> {{{value}}} </td> {{/each}} </tr>';
 
   var Tree = Widget.extend({
-    setup: function() {
-      var that = this;
+    attrs: {
+      url: '',
+      data: [],
 
-      var url = this.get('url');
-      if (url){
-        $.getJSON(url, function(data){
-          that.data = data;
-          var tpl = that._createTree(data);
-          that.element.html(tpl);
-        });
-      } else {
-        //避免向服务端发送请求
-        var data =this.get('data');
-        if (data){
-          this.data = data;
-          var tpl = that._createTree(data);
-          that.element.html(tpl);
+      title: '',
+      fields: [],
+
+      children: 'children',
+      multiSelect: false,
+      cascade: false,
+
+      width: 0,
+      height: 0
+    },
+
+    _onRenderUrl: function(url) {
+      var self = this;
+      $.getJSON(url, function(data) {
+        self._createTree(data.data);
+      });
+    },
+    _onRenderData: function(data) {
+      this._createTree(data);
+    },
+
+    _createTree: function(data) {
+      this.data = data;
+
+      var gridWidth = this.get('width') || this.element.parent().width();
+      var fields = this._processField(gridWidth);
+      var gridHeight = this.get('height');
+      var html = handlebars.compile(treeTpl)({
+        width: gridWidth,
+        height: gridHeight,
+
+        title: this.get('title'),
+        fields: fields
+      });
+
+      this.element.html(html);
+
+      this._tree = this.$('.grid-no-border tbody');
+      this._createRow(['elbow-end-minus', 'folder'], data);
+      this._loopRow(data, ['elbow-empty']);
+      this._processData();
+
+      //更改icon
+      this.$('.grid-row').each(function(index, row) {
+        var $row = $(row);
+        var icon = $row.data('data').icon;
+        if (icon) {
+          $row.find('.icon-tree-leaf,.icon-tree-folder').css('background', 'url("' + icon + '")');
         }
-      }
-
-      this.render();
-    },
-
-    events: {
-      'click .grid-row': 'click'
-    },
-
-    click: function(e){
-      var node = $(e.target);
-      var data = node.parents('tr').data('data');
-
-      //打开折叠
-      if (/minus|plus/.test(node.attr('class'))){
-        this.toggle(node);
-      } else {
-        //点击事件
-        node.parents('tr').addClass('grid-row-is-selected')
-          .siblings().removeClass('grid-row-is-selected');
-
-        //参数为点击项对应数据，节点，整个tree数据
-        this.trigger('click', data, node, this.data);
-      }
-    },
-
-    toggle: function(node){
-      var index = node.parent().children().index(node);
-      var row = node.parents('tr');
-
-      var cls = node.attr('class');
-      if (/minus/.test(cls)){
-        cls = cls.replace('minus', 'plus');
-
-        toggle('hide', row, index);
-        row.removeAttr('data-status');
-      } else if (/plus/.test(cls)){
-        cls = cls.replace('plus', 'minus');
-
-        toggle('show', row, index);
-        row.attr('data-status', 'expanded');
-      } else {
-        seajs.console('不合法的class');
-      }
-      node.attr('class', cls);
-    },
-
-    //生成tree
-    _tree: null,
-
-    _createTree: function(data){
-      this._tree = $('<table>', {
-        'class': 'grid tree unselectable',
-        border: '0',
-        cellspacing: '0',
-        cellpadding: '0'
-      }).append('<tbody>');
-
-      this._createHeader();
-
-      this._loopRow(data,[]);
-      return this._tree;
-    },
-
-    _createHeader: function(){
-      var headers = this.get('headers');
-      var header = handlebars.compile(headerTpl)({
-        headers: headers
       });
-      this._tree.append(header);
-    },
 
-    _createRow: function(icons, data) {
+      //已选择的行
+      if (this.get('multiSelect')) {
+        this.$('.icon-tree-leaf,.icon-tree-folder').before($('<input type="checkbox" data-role="check">'));
+        this.selected = [];
+      } else {
+        this.selected = null;
+      }
+
+      //自适应高度
+      if (!gridHeight) {
+        gridHeight = this.element.height() - this.$('.grid-bd').position().top - 1;
+        this.$('.grid-bd').height(gridHeight);
+      }
+
+      this.trigger('rendered', this);
+    },
+    _processField: function(gridWidth) {
       var fields = this.get('fields');
-      var grids = fields? $.map(fields,function(field){
-        return data[field];
-      }):[];
+      if (!fields) return [];
 
-      var row = handlebars.compile(rowTpl)({
-        icons: icons,
-        name: data.name,
-        expanded: data.children.length !== 0? true:false,
-        leaf: data.children.length === 0? true:false,
-        grids: grids
+      var specWidth = 0,
+        specNum = 0;
+      $.each(fields, function() {
+        if (this.width) {
+          specWidth += this.width;
+          specNum += 1;
+        }
       });
-      row = $(row);
-      row.data('data', data);
-      this._tree.append(row);
+
+      //padding-width + border-width = 9
+      //滚动条宽度取18
+      var leftWidth = gridWidth - fields.length * 9 - specWidth - 18;
+      var averageWidth = leftWidth / (fields.length - specNum);
+
+      fields = $.map(fields, function(field) {
+        if (!field.width) {
+          field.width = averageWidth;
+        }
+        return field;
+      });
+      this._fields = fields;
+      return fields;
     },
 
-    _loopRow: function(data, prefix){
-      for (var i = 0; i < data.children.length; i++) {
-        var d = data.children[i];
-        if (d.children.length === 0) {
-          if (i != data.children.length-1){
-            this._createRow(prefix.concat('elbow','leaf'), d);
+    _loopRow: function(data, prefix) {
+      var childrenName = this.get('children');
+
+      var child = data[childrenName];
+      for (var i = 0; i < child.length; i++) {
+        var d = child[i];
+        if (d[childrenName].length === 0) {
+          if (i != child.length - 1) {
+            this._createRow(prefix.concat('elbow', 'leaf'), d);
           } else {
-            this._createRow(prefix.concat('elbow-end','leaf'), d);
+            this._createRow(prefix.concat('elbow-end', 'leaf'), d);
           }
         } else {
-          if (i != data.children.length-1){
-            this._createRow(prefix.concat('elbow-minus','folder'), d);
+          if (i != child.length - 1) {
+            this._createRow(prefix.concat('elbow-minus', 'folder'), d);
           } else {
-            this._createRow(prefix.concat('elbow-end-minus','folder'), d);
+            this._createRow(prefix.concat('elbow-end-minus', 'folder'), d);
           }
-          if (i != data.children.length-1){
+          if (i != child.length - 1) {
             this._loopRow(d, prefix.concat('elbow-line'));
-          }
-          else {
+          } else {
             this._loopRow(d, prefix.concat('elbow-empty'));
           }
         }
       }
+    },
+
+    _createRow: function(icons, data) {
+      var grids = [];
+      var treeColumnWidth = 0;
+      if (this._fields) {
+        grids = $.map(this._fields, function(field) {
+          if (field.name) {
+            var value = data[field.name];
+            value = _.escape(value);
+
+            if ($.isFunction(field.render)) {
+              value = field.render(value);
+            }
+            field.value = value;
+
+            return field;
+          } else {
+            //没有设置name的列视为tree column
+            if (field.width) {
+              treeColumnWidth = field.width;
+            }
+          }
+        });
+      }
+
+      var child = data[this.get('children')];
+      var row = handlebars.compile(rowTpl)({
+        id: data.id,
+        treeColumnWidth: treeColumnWidth,
+        icons: icons,
+        name: data.name,
+        expanded: child.length !== 0 ? true : false,
+        leaf: child.length === 0 ? true : false,
+        grids: grids
+      });
+      var $row = $(row);
+      $row.data('data', data);
+      this._tree.append($row);
+    },
+
+    //将关系保存在data中
+    _processData: function() {
+      var self = this;
+      var childName = this.get('children');
+
+      this.$('.grid-row').each(function(index, row) {
+        var $row = $(row);
+        var dataList = $row.data('data')[childName];
+        $.each(dataList, function(i, data) {
+          var $r = self.$('.grid-row[data-id=' + data.id + ']');
+          $r.data('parent', $row);
+
+          $r.data('siblings', self._getSiblings(data.id, dataList));
+        });
+
+        var children = [];
+        self._getChildren($row.data('data'), children);
+        $row.data('children', children);
+      });
+
+      //设置第一层级siblings
+      this.$('.grid-row').each(function(index, row) {
+        var $row = $(row);
+        if (!$row.data('parent')) {
+          $row.data('siblings', self._getSiblings($row.data('data').id, self.data[childName]));
+        }
+      });
+    },
+    _getChildren: function(data, children) {
+      var self = this;
+      var childrenName = this.get('children');
+      $.each(data[childrenName], function(index, d) {
+        var $row = self.$('.grid-row[data-id=' + d.id + ']');
+        children.push($row);
+        if (d[childrenName].length > 0) {
+          self._getChildren(d, children);
+        }
+      });
+    },
+    _getSiblings: function(id, children) {
+      var self = this;
+      var lst = [];
+      $.each(children, function(i, d) {
+        if (d.id !== id) {
+          lst.push(self.$('.grid-row[data-id=' + d.id + ']'));
+        }
+      });
+      return lst;
+    },
+
+    events: {
+      'click [class$=-minus],[class$=-plus]': '_toggle',
+      'dblclick  [data-role=expander] [data-role=text]': '_toggle',
+      'click .grid-row': '_click',
+      'click [data-role=check]': '_check'
+    },
+
+    _toggle: function(e) {
+      var $target = $(e.target);
+      var $row = $target.parents('tr');
+      if ($row.attr('data-status') == 'expanded') {
+        this.shrink($row);
+      } else {
+        this.expand($row);
+      }
+    },
+    expand: function($row) {
+      this._show($row);
+      this._changeIcon($row, 'plus', 'minus');
+      $row.attr('data-status', 'expanded');
+    },
+    shrink: function($row) {
+      this._hide($row);
+      this._changeIcon($row, 'minus', 'plus');
+      $row.removeAttr('data-status');
+    },
+
+    _changeIcon: function($row, old, other) {
+      var $i = $row.find('[class$=-' + old + ']');
+      var cls = $i.attr('class');
+      cls = cls.replace(old, other);
+      $i.attr('class', cls);
+    },
+    _show: function($row) {
+      var self = this;
+      $.each($row.data('data')[this.get('children')], function(index, data) {
+        var $r = self.$('.grid-row[data-id=' + data.id + ']');
+        $r.show();
+        if ($r.attr('data-status') == 'expanded') {
+          self._show($r);
+        }
+      });
+    },
+    _hide: function($row) {
+      var self = this;
+      $.each($row.data('data')[this.get('children')], function(index, data) {
+        var $r = self.$('.grid-row[data-id=' + data.id + ']');
+        $r.hide();
+        if ($r.attr('data-role') == 'expander' && $r.attr('data-status') == 'expanded') {
+          self._hide($r);
+        }
+      });
+    },
+
+    _click: function(e) {
+      var $target = $(e.target);
+      var $row = $target.parents('tr');
+      var data = $row.data('data');
+
+      if (!/minus|plus/.test($target.attr('class'))) {
+        if (!this.get('multiSelect')) {
+          if (this.selected && this.selected.data('data').id === data.id) {
+            this.selected = null;
+            $row.removeClass('grid-row-is-selected');
+          } else {
+            this.selected = $row;
+            $row.addClass('grid-row-is-selected').siblings().removeClass('grid-row-is-selected');
+          }
+        }
+
+        if ($target.attr('data-role') != 'check') {
+          this.trigger('click', $target, data);
+        }
+      }
+    },
+
+    _check: function(e) {
+      var self = this;
+      var $target = $(e.target);
+      var $row = $target.parents('tr');
+
+      if ($target.prop('checked')) {
+        this._checkRow($row);
+        if (this.get('cascade')) {
+          $.each($row.data('children'), function(index, $r) {
+            self.check($r);
+          });
+        }
+      } else {
+        this._unCheckRow($row);
+        if (this.get('cascade')) {
+          $.each($row.data('children'), function(index, $r) {
+            self.unCheck($r);
+          });
+        }
+      }
+    },
+    _checkRow: function($row) {
+      this.selected.push($row);
+      $row.addClass('grid-row-is-selected');
+    },
+    _unCheckRow: function($row) {
+      var id = $row.data('data').id;
+      for (var i = this.selected.length - 1; i >= 0; i--) {
+        if (this.selected[i].data('data').id === id) {
+          this.selected.splice(i, 1);
+        }
+      }
+      $row.removeClass('grid-row-is-selected');
+    },
+
+    check: function($row) {
+      var $check = $row.find('[data-role=check]');
+      if (!$check) return;
+
+      if (!$check.prop('checked')) {
+        this._checkRow($row);
+        $check.prop('checked', true);
+      }
+    },
+    unCheck: function($row) {
+      var $check = $row.find('[data-role=check]');
+      if (!$check) return;
+
+      if ($check.prop('checked')) {
+        this._unCheckRow($row);
+        $check.prop('checked', false);
+      }
+    },
+
+    select: function($row) {
+      //暂不支持多选
+      if (this.get('multiSelect')) return;
+
+      //父节点张开
+      var parentRow = $row.data('parent');
+      while (parentRow) {
+        if (parentRow.attr('data-status') != 'expanded') {
+          this.expand(parentRow);
+        }
+        parentRow = parentRow.data('parent');
+      }
+
+      //选中
+      this.selected = $row;
+      $row.addClass('grid-row-is-selected').siblings().removeClass('grid-row-is-selected');
+
+      //滚动到所选内容
+      var index = $row.parent().children(':visible').index($row);
+      this.$('.grid-bd').scrollTop($row.height() * index);
+
+      var data = $row.data('data');
+      this.trigger('click', $row, data);
+    },
+
+    refresh: function() {
+      //刷新往往不会改变url
+      var url = this.get('url');
+      this._onRenderUrl(url);
     }
 
   });
 
   module.exports = Tree;
-
-  function toggle(type, row, index){
-    var nextRow = row.next();
-    var nextNode = nextRow.children().eq(0).children().eq(index);
-    if (nextNode.hasClass('icon-tree-elbow-line') || nextNode.hasClass('icon-tree-elbow-empty')){
-      nextRow[type]();
-
-      if (type == 'show'){
-        if (nextRow.attr('data-type') == 'leaf'){
-          toggle(type, nextRow, index);
-        } else {
-          if (nextRow.attr('data-status') == 'expanded'){
-            toggle(type, nextRow, index);
-          }
-        }
-      } else {
-        toggle(type, nextRow, index);
-      }
-    }
-  }
 
 });
