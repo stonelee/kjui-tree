@@ -46,6 +46,8 @@ render: function(value) {
 
 默认为false，如果设为true可以级联选择
 
+选中（取消）父节点，子节点自动选中（取消）；选中（取消）子节点，父节点不变
+
 ### width `Number`
 
 整个tree的宽度，默认扩展到父元素宽度
@@ -108,7 +110,7 @@ render: function(value) {
 
 * `tree` 组件实例
 
-## `$row.data`
+## $row.data
 
 ### data `  `
 
