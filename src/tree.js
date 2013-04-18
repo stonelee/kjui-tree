@@ -26,7 +26,7 @@ define(function(require, exports, module) {
     _onRenderUrl: function(url) {
       var self = this;
       $.getJSON(url, function(data) {
-        self._createTree(data);
+        self._createTree(data.data);
       });
     },
     _onRenderData: function(data) {
@@ -50,7 +50,8 @@ define(function(require, exports, module) {
       this.element.html(html);
 
       this._tree = this.$('.grid-no-border tbody');
-      this._loopRow(data, []);
+      this._createRow(['elbow-end-minus', 'folder'], data);
+      this._loopRow(data, ['elbow-empty']);
       this._processData();
 
       //更改icon
