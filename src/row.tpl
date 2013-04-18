@@ -1,5 +1,5 @@
 <tr class="grid-row" data-id="{{id}}" {{#if expanded}}data-status="expanded"{{/if}} {{#if leaf}}data-role="leaf"{{else}}data-role="expander"{{/if}}>
-  <td class="grid-cell"{{#if treeColumnWidth}} width="{{treeColumnWidth}}"{{/if}}>
+  <td class="grid-cell"{{#if treeColumnWidth}} width="{{treeColumnWidth}}"{{/if}} style="cursor:pointer;">
     {{#each icons}}<i class="icon icon-tree-{{this}}"></i>{{/each}}{{name}}
   </td>
   {{#each grids}}

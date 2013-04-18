@@ -15,6 +15,7 @@ define(function(require, exports, module) {
       title: '',
       fields: [],
 
+      children: 'children',
       multiSelect: false,
       cascade: false,
 
@@ -106,21 +107,24 @@ define(function(require, exports, module) {
     },
 
     _loopRow: function(data, prefix) {
-      for (var i = 0; i < data.children.length; i++) {
-        var d = data.children[i];
-        if (d.children.length === 0) {
-          if (i != data.children.length - 1) {
+      var childrenName = this.get('children');
+
+      var child = data[childrenName];
+      for (var i = 0; i < child.length; i++) {
+        var d = child[i];
+        if (d[childrenName].length === 0) {
+          if (i != child.length - 1) {
             this._createRow(prefix.concat('elbow', 'leaf'), d);
           } else {
             this._createRow(prefix.concat('elbow-end', 'leaf'), d);
           }
         } else {
-          if (i != data.children.length - 1) {
+          if (i != child.length - 1) {
             this._createRow(prefix.concat('elbow-minus', 'folder'), d);
           } else {
             this._createRow(prefix.concat('elbow-end-minus', 'folder'), d);
           }
-          if (i != data.children.length - 1) {
+          if (i != child.length - 1) {
             this._loopRow(d, prefix.concat('elbow-line'));
           } else {
             this._loopRow(d, prefix.concat('elbow-empty'));
@@ -153,13 +157,14 @@ define(function(require, exports, module) {
         });
       }
 
+      var child = data[this.get('children')];
       var row = handlebars.compile(rowTpl)({
         id: data.id,
         treeColumnWidth: treeColumnWidth,
         icons: icons,
         name: data.name,
-        expanded: data.children.length !== 0 ? true : false,
-        leaf: data.children.length === 0 ? true : false,
+        expanded: child.length !== 0 ? true : false,
+        leaf: child.length === 0 ? true : false,
         grids: grids
       });
       var $row = $(row);
@@ -170,9 +175,11 @@ define(function(require, exports, module) {
     //将关系保存在data中
     _processData: function() {
       var self = this;
+      var childName = this.get('children');
+
       this.$('.grid-row').each(function(index, row) {
         var $row = $(row);
-        var dataList = $row.data('data').children;
+        var dataList = $row.data('data')[childName];
         $.each(dataList, function(i, data) {
           var $r = self.$('.grid-row[data-id=' + data.id + ']');
           $r.data('parent', $row);
@@ -189,16 +196,17 @@ define(function(require, exports, module) {
       this.$('.grid-row').each(function(index, row) {
         var $row = $(row);
         if (!$row.data('parent')) {
-          $row.data('siblings', self._getSiblings($row.data('data').id, self.data.children));
+          $row.data('siblings', self._getSiblings($row.data('data').id, self.data[childName]));
         }
       });
     },
     _getChildren: function(data, children) {
       var self = this;
-      $.each(data.children, function(index, d) {
+      var childrenName = this.get('children');
+      $.each(data[childrenName], function(index, d) {
         var $row = self.$('.grid-row[data-id=' + d.id + ']');
         children.push($row);
-        if (d.children.length > 0) {
+        if (d[childrenName].length > 0) {
           self._getChildren(d, children);
         }
       });
@@ -248,7 +256,7 @@ define(function(require, exports, module) {
     },
     _show: function($row) {
       var self = this;
-      $.each($row.data('data').children, function(index, data) {
+      $.each($row.data('data')[this.get('children')], function(index, data) {
         var $r = self.$('.grid-row[data-id=' + data.id + ']');
         $r.show();
         if ($r.attr('data-status') == 'expanded') {
@@ -258,7 +266,7 @@ define(function(require, exports, module) {
     },
     _hide: function($row) {
       var self = this;
-      $.each($row.data('data').children, function(index, data) {
+      $.each($row.data('data')[this.get('children')], function(index, data) {
         var $r = self.$('.grid-row[data-id=' + data.id + ']');
         $r.hide();
         if ($r.attr('data-role') == 'expander' && $r.attr('data-status') == 'expanded') {

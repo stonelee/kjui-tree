@@ -132,3 +132,24 @@ seajs.use(['$', 'tree'], function($, Tree) {
 });
 </script>
 ````
+
+## 更改children配置
+
+````iframe:300
+<div id="demo1"></div>
+
+<script>
+seajs.use(['tree'], function(Tree) {
+  window.tree = new Tree({
+    element: '#demo1',
+    title: 'tree',
+    url: './tree-children.json',
+    children: 'group',
+    height: 200,
+    onSelect: function(target, data) {
+      console.log(target, data);
+    }
+  }).render();
+});
+</script>
+````

@@ -38,6 +38,10 @@ render: function(value) {
 }
 ```
 
+### children `String`
+
+包含子节点的数组对应的key，默认为children
+
 ### multiSelect `Boolean`
 
 默认为false，如果设为true则出现多选框，这时可以进行多选
