@@ -224,6 +224,7 @@ define(function(require, exports, module) {
 
     events: {
       'click [class$=-minus],[class$=-plus]': '_toggle',
+      'dblclick  [data-role=expander] [data-role=text]': '_toggle',
       'click .grid-row': '_click',
       'click [data-role=check]': '_check'
     },

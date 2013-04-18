@@ -147,3 +147,4 @@ render: function(value) {
 * 非叶子节点 `expander`
 * 叶子节点 `leaf`
 * 多选框 `check`
+* 点击文字 `text`
