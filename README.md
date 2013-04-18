@@ -122,6 +122,10 @@ render: function(value) {
 
 该行所有层级的子节点组成的数组
 
+### siblings ` `
+
+该行相同层级的其他节点组成的数组
+
 ## 节点属性
 
 ### data-id `tr`

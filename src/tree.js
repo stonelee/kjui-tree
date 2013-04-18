@@ -161,15 +161,27 @@ define(function(require, exports, module) {
     //将关系保存在data中
     _processData: function() {
       var self = this;
-      this.$('.grid-row[data-role=expander]').each(function(index, row) {
+      this.$('.grid-row').each(function(index, row) {
         var $row = $(row);
-        $.each($row.data('data').children, function(i, data) {
-          self.$('.grid-row[data-id=' + data.id + ']').data('parent', $row);
+        var dataList = $row.data('data').children;
+        $.each(dataList, function(i, data) {
+          var $r = self.$('.grid-row[data-id=' + data.id + ']');
+          $r.data('parent', $row);
+
+          $r.data('siblings', self._getSiblings(data.id, dataList));
         });
 
         var children = [];
         self._getChildren($row.data('data'), children);
         $row.data('children', children);
+      });
+
+      //设置第一层级siblings
+      this.$('.grid-row').each(function(index, row) {
+        var $row = $(row);
+        if (!$row.data('parent')) {
+          $row.data('siblings', self._getSiblings($row.data('data').id, self.data.children));
+        }
       });
     },
     _getChildren: function(data, children) {
@@ -181,6 +193,16 @@ define(function(require, exports, module) {
           self._getChildren(d, children);
         }
       });
+    },
+    _getSiblings: function(id, children) {
+      var self = this;
+      var lst = [];
+      $.each(children, function(i, d) {
+        if (d.id !== id) {
+          lst.push(self.$('.grid-row[data-id=' + d.id + ']'));
+        }
+      });
+      return lst;
     },
 
     events: {
@@ -265,14 +287,14 @@ define(function(require, exports, module) {
 
       if ($target.prop('checked')) {
         this._checkRow($row);
-        if (this.get('cascade') && $row.attr('data-role') == 'expander') {
+        if (this.get('cascade')) {
           $.each($row.data('children'), function(index, $r) {
             self.check($r);
           });
         }
       } else {
         this._unCheckRow($row);
-        if (this.get('cascade') && $row.attr('data-role') == 'expander') {
+        if (this.get('cascade')) {
           $.each($row.data('children'), function(index, $r) {
             self.unCheck($r);
           });
