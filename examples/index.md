@@ -7,14 +7,14 @@
 
 ## 树形组件
 
-````iframe:300
+````iframe:250
 <div id="demo1"></div>
 
 <script>
 seajs.use(['tree'], function(Tree) {
-  window.tree = new Tree({
+  new Tree({
     element: '#demo1',
-    title: 'tree',
+    title: 'title',
     url: './tree.json',
     height: 200,
     onSelect: function(target, data) {
@@ -49,7 +49,7 @@ seajs.use(['tree'], function(Tree) {
   }];
   new Tree({
     element: '#demo1',
-    title: 'tree',
+    title: 'title',
     url: './tree.json',
     fields: fields,
     height: 200

@@ -4,22 +4,41 @@
 
 ---
 
-## 多选
+## 没有标题
 
-````iframe:300
+````iframe:230
+<style type="text/css">
+  #demo1 .bd{
+    border-top-width:1px;
+  }
+</style>
+
 <div id="demo1"></div>
 
 <script>
 seajs.use(['tree'], function(Tree) {
-  window.tree = new Tree({
+  new Tree({
     element: '#demo1',
-    title: 'tree',
+    url: './tree.json',
+    height: 200
+  }).render();
+});
+</script>
+````
+
+## 多选
+
+````iframe:250
+<div id="demo1"></div>
+
+<script>
+seajs.use(['tree'], function(Tree) {
+  new Tree({
+    element: '#demo1',
+    title: 'title',
     url: './tree.json',
     multiSelect: true,
-    height: 200,
-    onSelect: function(target, data) {
-      console.log(target, data);
-    }
+    height: 200
   }).render();
 });
 </script>
@@ -33,14 +52,11 @@ seajs.use(['tree'], function(Tree) {
 
 <script>
 seajs.use(['$','tree'], function($,Tree) {
-  var tree = window.tree = new Tree({
+  var tree = new Tree({
     element: '#demo1',
-    title: 'tree',
+    title: 'title',
     url: './tree.json',
-    height: 200,
-    onSelect: function(target, data) {
-      console.log(target, data);
-    }
+    height: 200
   }).render();
 
   $('#select521').click(function(){
@@ -54,21 +70,18 @@ seajs.use(['$','tree'], function($,Tree) {
 
 ## 级联选择
 
-````iframe:300
+````iframe:250
 <div id="demo1"></div>
 
 <script>
 seajs.use(['tree'], function(Tree) {
-  window.tree = new Tree({
+  new Tree({
     element: '#demo1',
-    title: 'tree',
+    title: 'title',
     url: './tree.json',
     multiSelect: true,
     cascade: true,
-    height: 200,
-    onSelect: function(target, data) {
-      console.log(target, data);
-    }
+    height: 200
   }).render();
 });
 </script>
@@ -76,21 +89,18 @@ seajs.use(['tree'], function(Tree) {
 
 ## 自定义关联选择（用于菜单管理）
 
-````iframe:300
+````iframe:250
 <div id="demo1"></div>
 
 <script>
 seajs.use(['$', 'tree'], function($, Tree) {
-  window.tree = new Tree({
+  new Tree({
     element: '#demo1',
-    title: 'tree',
+    title: 'title',
     url: './tree.json',
     multiSelect: true,
     cascade: true,
     height: 200,
-    onSelect: function(target, data) {
-      console.log(target, data);
-    },
     onRendered: function(tree){
       function isOnlyChecked($row){
         var bool = true;
@@ -135,20 +145,17 @@ seajs.use(['$', 'tree'], function($, Tree) {
 
 ## 更改children配置
 
-````iframe:300
+````iframe:250
 <div id="demo1"></div>
 
 <script>
 seajs.use(['tree'], function(Tree) {
-  window.tree = new Tree({
+  new Tree({
     element: '#demo1',
-    title: 'tree',
+    title: 'title',
     url: './tree-children.json',
     children: 'group',
-    height: 200,
-    onSelect: function(target, data) {
-      console.log(target, data);
-    }
+    height: 200
   }).render();
 });
 </script>
