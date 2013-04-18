@@ -4,6 +4,7 @@
   "children": [{
     "id": 1,
     "name": "1验票站",
+    "icon": "./images/monitor.png",
     "children": []
   },
   {
@@ -17,6 +18,7 @@
     "children": [{
       "id": 31,
       "name": "31验票站",
+      "icon": "./images/user.png",
       "children": []
     },{
       "id": 32,

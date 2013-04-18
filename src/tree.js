@@ -52,9 +52,18 @@ define(function(require, exports, module) {
       this._loopRow(data, []);
       this._processData();
 
+      //更改icon
+      this.$('.grid-row').each(function(index, row) {
+        var $row = $(row);
+        var icon = $row.data('data').icon;
+        if (icon) {
+          $row.find('.icon-tree-leaf,.icon-tree-folder').css('background', 'url("' + icon + '")');
+        }
+      });
+
       //已选择的行
       if (this.get('multiSelect')) {
-        $('.icon-tree-leaf,.icon-tree-folder').before($('<input type="checkbox" data-role="check">'));
+        this.$('.icon-tree-leaf,.icon-tree-folder').before($('<input type="checkbox" data-role="check">'));
         this.selected = [];
       } else {
         this.selected = null;
