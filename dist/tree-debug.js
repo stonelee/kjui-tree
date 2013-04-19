@@ -146,9 +146,9 @@ define("kjui/tree/1.0.0/tree-debug", ["$-debug", "arale/widget/1.0.2/widget-debu
             if ($.isFunction(field.render)) {
               value = field.render(value);
             }
-            field.value = value;
-
-            return field;
+            var f = _.clone(field);
+            f.value = value;
+            return f;
           } else {
             //没有设置name的列视为tree column
             if (field.width) {

@@ -146,9 +146,9 @@ define(function(require, exports, module) {
             if ($.isFunction(field.render)) {
               value = field.render(value);
             }
-            field.value = value;
-
-            return field;
+            var f = _.clone(field);
+            f.value = value;
+            return f;
           } else {
             //没有设置name的列视为tree column
             if (field.width) {
