@@ -160,3 +160,21 @@ seajs.use(['tree'], function(Tree) {
 });
 </script>
 ````
+
+## 不显示根节点
+
+````iframe:250
+<div id="demo1"></div>
+
+<script>
+seajs.use(['tree'], function(Tree) {
+  new Tree({
+    element: '#demo1',
+    title: 'title',
+    url: './tree.json',
+    showRoot: false,
+    height: 200
+  }).render();
+});
+</script>
+````

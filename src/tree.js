@@ -15,6 +15,7 @@ define(function(require, exports, module) {
       title: '',
       fields: [],
 
+      showRoot: true,
       children: 'children',
       multiSelect: false,
       cascade: false,
@@ -50,8 +51,12 @@ define(function(require, exports, module) {
       this.element.html(html);
 
       this._tree = this.$('.grid-no-border tbody');
-      this._createRow(['elbow-end-minus', 'folder'], data);
-      this._loopRow(data, ['elbow-empty']);
+      if (this.get('showRoot')) {
+        this._createRow(['elbow-end-minus', 'folder'], data);
+        this._loopRow(data, ['elbow-empty']);
+      } else {
+        this._loopRow(data, []);
+      }
       this._processData();
 
       //更改icon

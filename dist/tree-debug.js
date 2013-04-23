@@ -15,6 +15,7 @@ define("kjui/tree/1.0.0/tree-debug", ["$-debug", "arale/widget/1.0.2/widget-debu
       title: '',
       fields: [],
 
+      showRoot: true,
       children: 'children',
       multiSelect: false,
       cascade: false,
@@ -50,8 +51,12 @@ define("kjui/tree/1.0.0/tree-debug", ["$-debug", "arale/widget/1.0.2/widget-debu
       this.element.html(html);
 
       this._tree = this.$('.grid-no-border tbody');
-      this._createRow(['elbow-end-minus', 'folder'], data);
-      this._loopRow(data, ['elbow-empty']);
+      if (this.get('showRoot')) {
+        this._createRow(['elbow-end-minus', 'folder'], data);
+        this._loopRow(data, ['elbow-empty']);
+      } else {
+        this._loopRow(data, []);
+      }
       this._processData();
 
       //更改icon

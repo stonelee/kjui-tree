@@ -38,6 +38,10 @@ render: function(value) {
 }
 ```
 
+### showRoot `Boolean`
+
+默认为true，如果设为false则不显示根节点，多用于accordion
+
 ### children `String`
 
 包含子节点的数组对应的key，默认为children
