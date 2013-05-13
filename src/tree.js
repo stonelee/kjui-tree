@@ -1,57 +1,32 @@
 define(function(require, exports, module) {
   var $ = require('$'),
-    Widget = require('widget'),
-    handlebars = require('handlebars'),
+    Grid = require('grid'),
+    Handlebars = require('handlebars'),
     _ = require('underscore');
 
-  var treeTpl = require('./tree.tpl'),
-    rowTpl = require('./row.tpl');
+  var rowTpl = require('./row.tpl');
 
-  var Tree = Widget.extend({
-    attrs: {
-      url: '',
-      data: [],
-
-      title: '',
-      fields: [],
+  var Tree = Grid.extend({
+    model: {
+      paginate: false,
 
       showRoot: true,
       children: 'children',
       multiSelect: false,
-      cascade: false,
-
-      width: 0,
-      height: 0
+      cascade: false
     },
 
-    _onRenderUrl: function(url) {
-      var self = this;
-      $.getJSON(url, function(data) {
-        self._createTree(data.data);
-      });
-    },
-    _onRenderData: function(data) {
-      this._createTree(data);
+    setup: function() {
+      this.$('.grid-view table').addClass('grid-no-border');
+
+      Tree.superclass.setup.call(this);
     },
 
-    _createTree: function(data) {
+    _loadData: function(data) {
       this.data = data;
 
-      var gridWidth = this.get('width') || this.element.parent().width();
-      var fields = this._processField(gridWidth);
-      var gridHeight = this.get('height');
-      var html = handlebars.compile(treeTpl)({
-        width: gridWidth,
-        height: gridHeight,
-
-        title: this.get('title'),
-        fields: fields
-      });
-
-      this.element.html(html);
-
       this._tree = this.$('.grid-no-border tbody');
-      if (this.get('showRoot')) {
+      if (this.model.showRoot) {
         this._createRow(['elbow-end-minus', 'folder'], data);
         this._loopRow(data, ['elbow-empty']);
       } else {
@@ -64,56 +39,23 @@ define(function(require, exports, module) {
         var $row = $(row);
         var icon = $row.data('data').icon;
         if (icon) {
-          $row.find('.icon-tree-leaf,.icon-tree-folder').css('background', 'url("' + icon + '")');
+          $row.find('.icon-tree-leaf,.icon-tree-folder').css('background', 'url("' + icon + '") no-repeat 0 0');
         }
       });
 
       //已选择的行
-      if (this.get('multiSelect')) {
+      if (this.model.multiSelect) {
         this.$('.icon-tree-leaf,.icon-tree-folder').before($('<input type="checkbox" data-role="check">'));
         this.selected = [];
       } else {
         this.selected = null;
       }
 
-      //自适应高度
-      if (!gridHeight) {
-        gridHeight = this.element.height() - this.$('.grid-bd').position().top - 1;
-        this.$('.grid-bd').height(gridHeight);
-      }
-
-      this.trigger('rendered', this);
-    },
-    _processField: function(gridWidth) {
-      var fields = this.get('fields');
-      if (!fields) return [];
-
-      var specWidth = 0,
-        specNum = 0;
-      $.each(fields, function() {
-        if (this.width) {
-          specWidth += this.width;
-          specNum += 1;
-        }
-      });
-
-      //padding-width + border-width = 9
-      //滚动条宽度取18
-      var leftWidth = gridWidth - fields.length * 9 - specWidth - 18;
-      var averageWidth = leftWidth / (fields.length - specNum);
-
-      fields = $.map(fields, function(field) {
-        if (!field.width) {
-          field.width = averageWidth;
-        }
-        return field;
-      });
-      this._fields = fields;
-      return fields;
+      this.trigger('loaded');
     },
 
     _loopRow: function(data, prefix) {
-      var childrenName = this.get('children');
+      var childrenName = this.model.children;
 
       var child = data[childrenName];
       for (var i = 0; i < child.length; i++) {
@@ -141,9 +83,8 @@ define(function(require, exports, module) {
 
     _createRow: function(icons, data) {
       var grids = [];
-      var treeColumnWidth = 0;
-      if (this._fields) {
-        grids = $.map(this._fields, function(field) {
+      if (this.model.fields) {
+        grids = $.map(this.model.fields, function(field) {
           if (field.name) {
             var value = data[field.name];
             value = _.escape(value);
@@ -154,19 +95,13 @@ define(function(require, exports, module) {
             var f = _.clone(field);
             f.value = value;
             return f;
-          } else {
-            //没有设置name的列视为tree column
-            if (field.width) {
-              treeColumnWidth = field.width;
-            }
           }
         });
       }
 
-      var child = data[this.get('children')];
-      var row = handlebars.compile(rowTpl)({
+      var child = data[this.model.children];
+      var row = Handlebars.compile(rowTpl)({
         id: data.id,
-        treeColumnWidth: treeColumnWidth,
         icons: icons,
         name: data.name,
         expanded: child.length !== 0 ? true : false,
@@ -181,7 +116,7 @@ define(function(require, exports, module) {
     //将关系保存在data中
     _processData: function() {
       var self = this;
-      var childName = this.get('children');
+      var childName = this.model.children;
 
       this.$('.grid-row').each(function(index, row) {
         var $row = $(row);
@@ -208,7 +143,7 @@ define(function(require, exports, module) {
     },
     _getChildren: function(data, children) {
       var self = this;
-      var childrenName = this.get('children');
+      var childrenName = this.model.children;
       $.each(data[childrenName], function(index, d) {
         var $row = self.$('.grid-row[data-id=' + d.id + ']');
         children.push($row);
@@ -263,7 +198,7 @@ define(function(require, exports, module) {
     },
     _show: function($row) {
       var self = this;
-      $.each($row.data('data')[this.get('children')], function(index, data) {
+      $.each($row.data('data')[this.model.children], function(index, data) {
         var $r = self.$('.grid-row[data-id=' + data.id + ']');
         $r.show();
         if ($r.attr('data-status') == 'expanded') {
@@ -273,7 +208,7 @@ define(function(require, exports, module) {
     },
     _hide: function($row) {
       var self = this;
-      $.each($row.data('data')[this.get('children')], function(index, data) {
+      $.each($row.data('data')[this.model.children], function(index, data) {
         var $r = self.$('.grid-row[data-id=' + data.id + ']');
         $r.hide();
         if ($r.attr('data-role') == 'expander' && $r.attr('data-status') == 'expanded') {
@@ -288,7 +223,7 @@ define(function(require, exports, module) {
       var data = $row.data('data');
 
       if (!/minus|plus/.test($target.attr('class'))) {
-        if (!this.get('multiSelect')) {
+        if (!this.model.multiSelect) {
           if (this.selected && this.selected.data('data').id === data.id) {
             this.selected = null;
             $row.removeClass('grid-row-is-selected');
@@ -311,14 +246,14 @@ define(function(require, exports, module) {
 
       if ($target.prop('checked')) {
         this._checkRow($row);
-        if (this.get('cascade')) {
+        if (this.model.cascade) {
           $.each($row.data('children'), function(index, $r) {
             self.check($r);
           });
         }
       } else {
         this._unCheckRow($row);
-        if (this.get('cascade')) {
+        if (this.model.cascade) {
           $.each($row.data('children'), function(index, $r) {
             self.unCheck($r);
           });
@@ -360,7 +295,7 @@ define(function(require, exports, module) {
 
     select: function($row) {
       //暂不支持多选
-      if (this.get('multiSelect')) return;
+      if (this.model.multiSelect) return;
 
       //父节点张开
       var parentRow = $row.data('parent');
@@ -377,7 +312,7 @@ define(function(require, exports, module) {
 
       //滚动到所选内容
       var index = $row.parent().children(':visible').index($row);
-      this.$('.grid-bd').scrollTop($row.height() * index);
+      this.$('.grid-view').scrollTop($row.height() * index);
 
       var data = $row.data('data');
       this.trigger('click', $row, data);

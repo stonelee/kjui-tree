@@ -2,16 +2,12 @@
 
 ---
 
-提供了树型展示功能，并提供TreeGrid效果
+基于Grid，提供了树型展示功能，可以自定义级联选择
 
 ---
 
 
 ## 配置
-
-### title `String`
-
-树标题，默认为空，表示不显示标题栏
 
 ### url `String`
 
@@ -21,13 +17,19 @@ ajax请求数据的路径
 
 直接加载静态数据
 
+## model
+
+### title `String`
+
+树标题，默认为空，表示不显示标题栏
+
 ### fields `Array`
 
 TreeGrid使用。用于进行列配置，包括
 
 * `header` 列名
 * `name` data中该列对应的key，对于树列不能配置该项
-* `width` `Number` 该列宽度
+* `width` `Number` 该列宽度,如果不设则平均分配
 * `align` 对齐方式,取值为`left`,`center`,`right`
 * `render` 自定义渲染函数，参数为该单元格的值
 
@@ -62,7 +64,7 @@ render: function(value) {
 
 ### height `Number`
 
-树内容高度，如果设置height，而显示内容过多，会自动出现下拉滚动条
+树内容高度，如果显示内容过多，会自动出现下拉滚动条
 
 ## 属性
 
@@ -112,9 +114,9 @@ render: function(value) {
 * `target` 被点击的元素，被包装成了jquery对象
 * `data` 该行对应的数据
 
-### rendered `tree`
+### loaded `  `
 
-组件渲染完毕后触发，用来对默认样式进行动态更改
+数据加载完毕后触发，可以自由更改默认样式
 
 * `tree` 组件实例
 

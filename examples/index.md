@@ -8,15 +8,15 @@
 ## 树形组件
 
 ````iframe:250
-<div id="demo1"></div>
 
 <script>
 seajs.use(['tree'], function(Tree) {
   new Tree({
-    element: '#demo1',
-    title: 'title',
     url: './tree.json',
-    height: 200,
+    model: {
+      title: 'title',
+      height: 200
+    },
     onSelect: function(target, data) {
       console.log(target, data);
     }
@@ -28,8 +28,6 @@ seajs.use(['tree'], function(Tree) {
 ## 树形表格组件
 
 ````iframe:300
-<div id="demo1"></div>
-
 <script>
 seajs.use(['tree'], function(Tree) {
 
@@ -37,9 +35,9 @@ seajs.use(['tree'], function(Tree) {
     width: 200
   },{
     header: '编号',
-    align: 'center',
+    name: 'id',
     width: 150,
-    name: 'id'
+    align: 'center'
   }, {
     header: '名称',
     name: 'name',
@@ -48,11 +46,12 @@ seajs.use(['tree'], function(Tree) {
     }
   }];
   new Tree({
-    element: '#demo1',
-    title: 'title',
     url: './tree.json',
-    fields: fields,
-    height: 200
+    model: {
+      fields: fields,
+      title: 'title',
+      height: 190
+    },
   }).render();
 });
 </script>

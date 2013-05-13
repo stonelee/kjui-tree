@@ -1,23 +1,23 @@
 {
-    "name": "tree",
-    "version": "1.0.0",
-    "root": "kjui",
-    "description": "tree",
-    "author": "Stone Lee <istonelee@gmail.com> (http://stonelee.info)",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/stonelee/kjui-tree.git"
-    },
-    "bugs": {
-        "url": "https://github.com/stonelee/kjui-tree/issues"
-    },
-    "dependencies": {
-        "$": "$",
-        "widget": "arale/widget/1.0.2/widget",
-        "handlebars": "gallery/handlebars/1.0.0/handlebars",
-        "underscore": "gallery/underscore/1.4.2/underscore"
-    },
-    "output": {
-        "tree.js": "."
-    }
+  "name": "tree",
+  "version": "1.1.0",
+  "root": "kjui",
+  "description": "基于Grid，提供了树型展示功能，可以自定义级联选择",
+  "author": "Stone Lee <istonelee@gmail.com> (http://stonelee.info)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stonelee/kjui-tree.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stonelee/kjui-tree/issues"
+  },
+  "dependencies": {
+    "$": "$",
+    "handlebars": "gallery/handlebars/1.0.1/handlebars",
+    "underscore": "gallery/underscore/1.4.2/underscore",
+    "grid": "kjui/grid/1.3.0/grid"
+  },
+  "output": {
+    "tree.js": "."
+  }
 }
