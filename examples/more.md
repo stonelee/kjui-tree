@@ -8,7 +8,7 @@
 
 ````iframe:230
 <style type="text/css">
-  .bd{
+  .panel-bd{
     border-top-width:1px;
   }
 </style>

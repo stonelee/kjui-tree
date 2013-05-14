@@ -17,7 +17,7 @@ define(function(require, exports, module) {
     },
 
     setup: function() {
-      this.$('.grid-view table').addClass('grid-no-border');
+      this.$('.grid-view').addClass('grid-with-no-border');
 
       Tree.superclass.setup.call(this);
     },
@@ -25,7 +25,7 @@ define(function(require, exports, module) {
     _loadData: function(data) {
       this.data = data;
 
-      this._tree = this.$('.grid-no-border tbody');
+      this._tree = this.$('.grid-view tbody');
       if (this.model.showRoot) {
         this._createRow(['elbow-end-minus', 'folder'], data);
         this._loopRow(data, ['elbow-empty']);
