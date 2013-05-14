@@ -17,7 +17,7 @@ seajs.use(['tree'], function(Tree) {
       title: 'title',
       height: 200
     },
-    onSelect: function(target, data) {
+    onClick: function(target, data) {
       console.log(target, data);
     }
   }).render();
