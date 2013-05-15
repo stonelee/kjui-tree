@@ -4,7 +4,7 @@ define("kjui/tree/1.1.0/tree-debug", ["$-debug", "kjui/grid/1.3.0/grid-debug", "
     Handlebars = require('gallery/handlebars/1.0.1/handlebars-debug'),
     _ = require('gallery/underscore/1.4.2/underscore-debug');
 
-  var rowTpl = '<tr class="grid-row" data-id="{{id}}" {{#if expanded}}data-status="expanded"{{/if}} {{#if leaf}}data-role="leaf"{{else}}data-role="expander"{{/if}}> <td class="grid-cell"> {{#each icons}}<i class="icon-tree-{{this}}"></i>{{/each}}<span data-role="text" style="cursor:pointer;" class="unselectable">{{name}}</span> </td> {{#each grids}} <td class="grid-cell"{{#if align}} style="text-align:{{align}};"{{/if}}> {{{value}}} </td> {{/each}} </tr>';
+  var rowTpl = '<tr class="grid-row" data-id="{{id}}" {{#if expanded}}data-status="expanded"{{/if}} {{#if leaf}}data-role="leaf"{{else}}data-role="expander"{{/if}}> <td class="grid-cell"> {{#each icons}}<i class="icon-tree-{{this}}"></i>{{/each}}<span data-role="text" class="tree-item">{{name}}</span> </td> {{#each grids}} <td class="grid-cell"{{#if align}} style="text-align:{{align}};"{{/if}}> {{{value}}} </td> {{/each}} </tr>';
 
   var Tree = Grid.extend({
     model: {
@@ -17,7 +17,7 @@ define("kjui/tree/1.1.0/tree-debug", ["$-debug", "kjui/grid/1.3.0/grid-debug", "
     },
 
     setup: function() {
-      this.$('.grid-view table').addClass('grid-no-border');
+      this.$('.grid-view').addClass('grid-with-no-border');
 
       Tree.superclass.setup.call(this);
     },
@@ -25,7 +25,7 @@ define("kjui/tree/1.1.0/tree-debug", ["$-debug", "kjui/grid/1.3.0/grid-debug", "
     _loadData: function(data) {
       this.data = data;
 
-      this._tree = this.$('.grid-no-border tbody');
+      this._tree = this.$('.grid-view tbody');
       if (this.model.showRoot) {
         this._createRow(['elbow-end-minus', 'folder'], data);
         this._loopRow(data, ['elbow-empty']);
