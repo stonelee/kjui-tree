@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8">
+    <title>kjui/tree - tree</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="nico 0.3.1" />
+    <link type="image/x-icon" href="./static/css/favicon.ico" rel="icon">
+    <link rel="stylesheet" href="./static/css/normalize.css" />
+    <link rel="stylesheet" href="./static/css/site.css" />
+    <link rel="stylesheet" href="./static/css/solarized.css" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36247332-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    if (location.port) {
+       return;
+    }
+    ga.src = 'https://ssl.google-analytics.com/ga.js'; 
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script src="http://assets.spmjs.org/seajs/seajs/2.0.0/??sea.js,plugin-combo.js,plugin-debug.js,plugin-text.js,plugin-style.js"></script>
+<script>
+  (function() {
+
+  var query = location.search.substring(1).split('&');
+  var srcdir = 'src';
+
+  if (contain(query, 'dist')) {
+    srcdir = 'dist';
+  } else if (contain(query, 'cov')) {
+    srcdir = 'src-cov';
+  }
+
+  seajs.config({
+    alias: {
+      "$": 'jquery/jquery/1.7.2/jquery',
+      jquery: 'jquery/jquery/1.7.2/jquery',
+      "jquery-debug": 'jquery/jquery/1.7.2/jquery-debug',
+      expect: "gallery/expect/0.2.0/expect",
+      puerh: "popomore/puerh/0.1.0/puerh",
+      'gallery/handlebars': 'gallery/handlebars/1.0.1/handlebars',
+      sinon: "gallery/sinon/1.6.0/sinon"
+    },
+    map: [function(uri) {
+      // resolve id
+      var m = uri.match(/kjui\/tree\/1.1.0\/(.*)/);
+      if (m) {
+        return resolve(m[1]);
+      }
+      return uri;
+    }],
+    comboExcludes: {test: function(uri) {
+      return uri.indexOf('http://assets.spmjs.org') === -1;
+    }}
+  });
+
+  function resolve(file) {
+    if (contain(query, 'debug')) {
+      if (file.indexOf('-debug') === -1) {
+        file = file.replace(/\.(\w+)$/, '-debug.$1');
+      }
+    }
+    return seajs.resolve("./" + srcdir + "/" + file);
+  }
+
+  function contain(arr, value) {
+    for (var i in arr) {
+      if (arr[i] === value) {
+        return true;
+      }
+    }
+    return false;
+  }
+      seajs.config({ alias: {"handlebars":"gallery/handlebars/1.0.0/handlebars","underscore":"gallery/underscore/1.4.4/underscore","grid":"kjui/grid/1.3.0/grid"}});
+    seajs.use([]);
+
+    seajs.config({alias: {
+      "$-debug": 'jquery/jquery/1.7.2/jquery-debug'
+        ,"tree": resolve("tree.js")
+    }});
+  })();
+</script>
+<link rel="stylesheet" href="http://stonelee.info/kjui-extui/dist/extui.css" />
+    <script src="./static/js/site.js"></script>
+    <!--[if lt IE 9]>
+    <script src="./static/js/html5shiv.js"></script>
+    <![endif]-->
+    
+  </head>
+  <body>
+    <div id="body-wrapper">
+      <aside id="sidebar-wrapper">
+      <h1>
+          <a href="./">Tree</a><sup class="package-root"><a href="/">kjui</a></sup>
+      </h1>
+        <p class="version">当前版本：<a href="http://aralejs.org/docs/online-status.html#kjui-tree" title="点击查看此组件发布情况">1.1.0</a></p>
+        <p class="description">基于Grid，提供了树型展示功能，可以自定义级联选择</p>
+        <a class="source" href="https://github.com/stonelee/kjui-tree.git" target="_blank">View the Project</a>
+        <ul id="navigation" role="navigation">
+          <li><a href="./">文档</a></li>
+          <li><a href="examples/">演示</a></li>
+          <li><a class="issue-link" href="https://github.com/stonelee/kjui-tree/issues" target="_blank">讨论</a></li>
+        </ul>
+        
+<div id="output-card">
+    <h3>kjui/tree/1.1.0/<a target="_blank" id="output-file"></a></h3>
+    <p>这是模块的输出文件，请 require 或 seajs.use 以上 ID 来使用本文件，具体 API 请阅读文档。</p>
+</div>
+
+      </aside>
+      <div id="content-wrapper">
+        <div id="content">
+<article class="hentry">
+  <h1 class="entry-title">tree</h1>
+  <div class="entry-content">
+    <p>基于Grid，提供了树型展示功能，可以自定义级联选择</p>
+<hr>
+<h2 id="配置">配置</h2><h3 id="url-string">url <code>String</code></h3><p>ajax请求数据的路径</p>
+<h3 id="data-array">data <code>Array</code></h3><p>直接加载静态数据</p>
+<h2 id="model">model</h2><h3 id="title-string">title <code>String</code></h3><p>树标题，默认为空，表示不显示标题栏</p>
+<h3 id="fields-array">fields <code>Array</code></h3><p>TreeGrid使用。用于进行列配置，包括</p>
+<ul>
+<li><code>header</code> 列名</li>
+<li><code>name</code> data中该列对应的key，对于树列不能配置该项</li>
+<li><code>width</code> <code>Number</code> 该列宽度,如果不设则平均分配</li>
+<li><code>align</code> 对齐方式,取值为<code>left</code>,<code>center</code>,<code>right</code></li>
+<li><code>render</code> 自定义渲染函数，参数为该单元格的值</li>
+</ul>
+<div class="highlight"><pre><code class="javascript"><span class="comment">//加粗，并加后缀</span>
+render: <span class="keyword">function</span>(value) {
+  <span class="keyword">return</span> <span class="string">'&lt;b&gt;'</span> + value + <span class="string">'吨&lt;/b&gt;'</span>;
+}</code></pre></div><h3 id="showroot-boolean">showRoot <code>Boolean</code></h3><p>默认为true，如果设为false则不显示根节点，多用于accordion</p>
+<h3 id="children-string">children <code>String</code></h3><p>包含子节点的数组对应的key，默认为children</p>
+<h3 id="multiselect-boolean">multiSelect <code>Boolean</code></h3><p>默认为false，如果设为true则出现多选框，这时可以进行多选</p>
+<h3 id="cascade-boolean">cascade <code>Boolean</code></h3><p>默认为false，如果设为true可以级联选择</p>
+<p>选中（取消）父节点，子节点自动选中（取消）；选中（取消）子节点，父节点不变</p>
+<h3 id="width-number">width <code>Number</code></h3><p>整个tree的宽度，默认扩展到父元素宽度</p>
+<h3 id="height-number">height <code>Number</code></h3><p>树内容高度，如果显示内容过多，会自动出现下拉滚动条</p>
+<h2 id="属性">属性</h2><h3 id="data-array">data <code>Array</code></h3><p>返回从url或者data中得到的数据</p>
+<h3 id="selected-tr-array">selected <code>$tr|Array</code></h3><p>返回当前选中的行，类型为jquery对象，可以使用 <code>$tr.data(&#39;data&#39;)</code> 得到该行对应的数据</p>
+<p>默认为单选，返回的是jquery对象。
+如果设置multiSelect则为多选，返回的是数组</p>
+<h2 id="方法">方法</h2><h3 id="select-row">select <code>$row</code></h3><p>将$row选中，只能在单选树中使用</p>
+<h3 id="expand-row">expand <code>$row</code></h3><p>将$row展开</p>
+<h3 id="shrink-row">shrink <code>$row</code></h3><p>将$row收缩</p>
+<h3 id="check-row">check <code>$row</code></h3><p>多选树中使用，使得该行被选中</p>
+<h3 id="uncheck-row">unCheck <code>$row</code></h3><p>多选树中使用，使得该行被取消选中</p>
+<h3 id="refresh">refresh <code> </code></h3><p>刷新数据，会导致选中效果失效</p>
+<h2 id="事件">事件</h2><h3 id="click-target-data">click <code>target, data</code></h3><p>在树中点击或者使用select方法触发，收缩展开操作以及选中checkbox不会触发</p>
+<ul>
+<li><code>target</code> 被点击的元素，被包装成了jquery对象</li>
+<li><code>data</code> 该行对应的数据</li>
+</ul>
+<h3 id="loaded">loaded <code> </code></h3><p>数据加载完毕后触发，可以自由更改默认样式</p>
+<ul>
+<li><code>tree</code> 组件实例</li>
+</ul>
+<h2 id="row-data">$row.data</h2><h3 id="data">data <code> </code></h3><p>该行对应的data</p>
+<h3 id="parent">parent <code> </code></h3><p>该行的父节点</p>
+<h3 id="children">children <code> </code></h3><p>该行所有层级的子节点组成的数组</p>
+<h3 id="siblings">siblings <code> </code></h3><p>该行相同层级的其他节点组成的数组</p>
+<h2 id="节点属性">节点属性</h2><h3 id="data-id-tr">data-id <code>tr</code></h3><p>该行对应的id</p>
+<h3 id="data-status-tr">data-status <code>tr</code></h3><p>非叶子节点是否已展开，如果已展开为<code>expanded</code></p>
+<h3 id="data-role-tr-input">data-role <code>tr|input</code></h3><ul>
+<li>非叶子节点 <code>expander</code></li>
+<li>叶子节点 <code>leaf</code></li>
+<li>多选框 <code>check</code></li>
+<li>点击文字 <code>text</code></li>
+</ul>
+
+  </div>
+</article>
+</div>
+      </div>
+      
+    </div>
+    <div id="footer-wrapper">
+      <footer>
+        <p class="powered"><a href="http://aralejs.org">Arale</a> •
+<a href="http://aliceui.org">Alice</a> •
+<a href="http://seajs.org">SeaJS</a> •
+<a href="https://spmjs.org">spmjs.org</a> •
+<a href="http://lab.lepture.com/nico/">nico</a>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

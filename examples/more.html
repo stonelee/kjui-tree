@@ -1,0 +1,287 @@
+<!DOCTYPE HTML>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8">
+    <title>kjui/tree - 更多</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="nico 0.3.1" />
+    <link type="image/x-icon" href="../static/css/favicon.ico" rel="icon">
+    <link rel="stylesheet" href="../static/css/normalize.css" />
+    <link rel="stylesheet" href="../static/css/site.css" />
+    <link rel="stylesheet" href="../static/css/solarized.css" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36247332-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    if (location.port) {
+       return;
+    }
+    ga.src = 'https://ssl.google-analytics.com/ga.js'; 
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script src="http://assets.spmjs.org/seajs/seajs/2.0.0/??sea.js,plugin-combo.js,plugin-debug.js,plugin-text.js,plugin-style.js"></script>
+<script>
+  (function() {
+
+  var query = location.search.substring(1).split('&');
+  var srcdir = 'src';
+
+  if (contain(query, 'dist')) {
+    srcdir = 'dist';
+  } else if (contain(query, 'cov')) {
+    srcdir = 'src-cov';
+  }
+
+  seajs.config({
+    alias: {
+      "$": 'jquery/jquery/1.7.2/jquery',
+      jquery: 'jquery/jquery/1.7.2/jquery',
+      "jquery-debug": 'jquery/jquery/1.7.2/jquery-debug',
+      expect: "gallery/expect/0.2.0/expect",
+      puerh: "popomore/puerh/0.1.0/puerh",
+      'gallery/handlebars': 'gallery/handlebars/1.0.1/handlebars',
+      sinon: "gallery/sinon/1.6.0/sinon"
+    },
+    map: [function(uri) {
+      // resolve id
+      var m = uri.match(/kjui\/tree\/1.1.0\/(.*)/);
+      if (m) {
+        return resolve(m[1]);
+      }
+      return uri;
+    }],
+    comboExcludes: {test: function(uri) {
+      return uri.indexOf('http://assets.spmjs.org') === -1;
+    }}
+  });
+
+  function resolve(file) {
+    if (contain(query, 'debug')) {
+      if (file.indexOf('-debug') === -1) {
+        file = file.replace(/\.(\w+)$/, '-debug.$1');
+      }
+    }
+    return seajs.resolve("../" + srcdir + "/" + file);
+  }
+
+  function contain(arr, value) {
+    for (var i in arr) {
+      if (arr[i] === value) {
+        return true;
+      }
+    }
+    return false;
+  }
+      seajs.config({ alias: {"handlebars":"gallery/handlebars/1.0.0/handlebars","underscore":"gallery/underscore/1.4.4/underscore","grid":"kjui/grid/1.3.0/grid"}});
+    seajs.use([]);
+
+    seajs.config({alias: {
+      "$-debug": 'jquery/jquery/1.7.2/jquery-debug'
+        ,"tree": resolve("tree.js")
+    }});
+  })();
+</script>
+<link rel="stylesheet" href="http://stonelee.info/kjui-extui/dist/extui.css" />
+    <script src="../static/js/site.js"></script>
+    <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.js"></script>
+    <![endif]-->
+    
+  </head>
+  <body>
+    <div id="body-wrapper">
+      <aside id="sidebar-wrapper">
+      <h1>
+          <a href="../">Tree</a><sup class="package-root"><a href="/">kjui</a></sup>
+      </h1>
+        <p class="version">当前版本：<a href="http://aralejs.org/docs/online-status.html#kjui-tree" title="点击查看此组件发布情况">1.1.0</a></p>
+        <p class="description">基于Grid，提供了树型展示功能，可以自定义级联选择</p>
+        <a class="source" href="https://github.com/stonelee/kjui-tree.git" target="_blank">View the Project</a>
+        <ul id="navigation" role="navigation">
+          <li><a href="../">文档</a></li>
+          <li><a href="index.html">演示</a></li>
+          <li><a class="issue-link" href="https://github.com/stonelee/kjui-tree/issues" target="_blank">讨论</a></li>
+        </ul>
+        
+<ol id="sidenav">
+  <li><a href="index.html">基本用法</a></li>
+  <li><a href="more.html">更多</a></li>
+</ol>
+<div id="output-card">
+    <h3>kjui/tree/1.1.0/<a target="_blank" id="output-file"></a></h3>
+    <p>这是模块的输出文件，请 require 或 seajs.use 以上 ID 来使用本文件，具体 API 请阅读文档。</p>
+</div>
+
+      </aside>
+      <div id="content-wrapper">
+        <div id="content">
+<article class="hentry">
+  <h1 class="entry-title">更多</h1>
+  <div class="entry-content">
+    <h2 id="没有标题">没有标题</h2><div class="nico-iframe">
+<iframe src="iframe-more-1.html" allowtransparency="true" 
+frameborder="0" scrolling="0" height="230"></iframe></div><div class="highlight"><pre><code class="xml"><span class="tag">&lt;<span class="title">style</span> <span class="attribute">type</span>=<span class="value">"text/css"</span>&gt;</span><span class="css">
+  <span class="class">.panel-bd</span><span class="rules">{
+    <span class="rule"><span class="attribute">border-top-width</span>:<span class="value"><span class="number">1</span>px;</span></span>
+  <span class="rule">}</span></span>
+</span><span class="tag">&lt;/<span class="title">style</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+seajs.use([<span class="string">'kjui/tree/1.1.0/tree'</span>], <span class="keyword">function</span>(Tree) {
+  <span class="keyword">new</span> Tree({
+    url: <span class="string">'./tree.json'</span>,
+    model: {
+      height: <span class="number">200</span>
+    }
+  }).render();
+});
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre></div><h2 id="多选">多选</h2><div class="nico-iframe">
+<iframe src="iframe-more-2.html" allowtransparency="true" 
+frameborder="0" scrolling="0" height="250"></iframe></div><div class="highlight"><pre><code class="xml"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+seajs.use([<span class="string">'kjui/tree/1.1.0/tree'</span>], <span class="keyword">function</span>(Tree) {
+  <span class="keyword">new</span> Tree({
+    url: <span class="string">'./tree.json'</span>,
+    model: {
+      title: <span class="string">'title'</span>,
+      multiSelect: <span class="literal">true</span>,
+      height: <span class="number">200</span>
+    }
+  }).render();
+});
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre></div><h2 id="选中某一行">选中某一行</h2><div class="nico-iframe">
+<iframe src="iframe-more-3.html" allowtransparency="true" 
+frameborder="0" scrolling="0" height="300"></iframe></div><div class="highlight"><pre><code class="xml"><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">"select521"</span>&gt;</span>select 521<span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+seajs.use([<span class="string">'$'</span>,<span class="string">'kjui/tree/1.1.0/tree'</span>], <span class="keyword">function</span>($,Tree) {
+  <span class="keyword">var</span> tree = <span class="keyword">new</span> Tree({
+    url: <span class="string">'./tree.json'</span>,
+    model: {
+      title: <span class="string">'title'</span>,
+      height: <span class="number">200</span>
+    }
+  }).render();
+
+  $(<span class="string">'#select521'</span>).click(<span class="keyword">function</span>(){
+    <span class="keyword">var</span> $tr = tree.$(<span class="string">'[data-id=521]'</span>);
+    tree.select($tr);
+  })
+
+});
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre></div><h2 id="级联选择">级联选择</h2><div class="nico-iframe">
+<iframe src="iframe-more-4.html" allowtransparency="true" 
+frameborder="0" scrolling="0" height="250"></iframe></div><div class="highlight"><pre><code class="xml"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+seajs.use([<span class="string">'kjui/tree/1.1.0/tree'</span>], <span class="keyword">function</span>(Tree) {
+  <span class="keyword">new</span> Tree({
+    url: <span class="string">'./tree.json'</span>,
+    model: {
+      title: <span class="string">'title'</span>,
+      multiSelect: <span class="literal">true</span>,
+      cascade: <span class="literal">true</span>,
+      height: <span class="number">200</span>
+    }
+  }).render();
+});
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre></div><h2 id="自定义关联选择（用于菜单管理）">自定义关联选择（用于菜单管理）</h2><div class="nico-iframe">
+<iframe src="iframe-more-5.html" allowtransparency="true" 
+frameborder="0" scrolling="0" height="250"></iframe></div><div class="highlight"><pre><code class="xml"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+seajs.use([<span class="string">'$'</span>, <span class="string">'kjui/tree/1.1.0/tree'</span>], <span class="keyword">function</span>($, Tree) {
+  <span class="keyword">new</span> Tree({
+    url: <span class="string">'./tree.json'</span>,
+    model: {
+      title: <span class="string">'title'</span>,
+      multiSelect: <span class="literal">true</span>,
+      cascade: <span class="literal">true</span>,
+      height: <span class="number">200</span>
+    },
+    onLoaded: <span class="keyword">function</span>(){
+      <span class="function"><span class="keyword">function</span> <span class="title">isOnlyChecked</span><span class="params">($row)</span>{</span>
+        <span class="keyword">var</span> bool = <span class="literal">true</span>;
+        $.each($row.data(<span class="string">'siblings'</span>), <span class="keyword">function</span>(index, $r){
+          <span class="keyword">var</span> $check = $r.find(<span class="string">'[data-role=check]'</span>);
+          <span class="keyword">if</span> ($check.prop(<span class="string">'checked'</span>)){
+            bool = <span class="literal">false</span>;
+            <span class="keyword">return</span> <span class="literal">false</span>;
+          }
+        });
+        <span class="keyword">return</span> bool;
+      }
+
+      <span class="keyword">var</span> tree = <span class="keyword">this</span>;
+      <span class="keyword">this</span>.delegateEvents(<span class="string">'click [data-role=check]'</span>, <span class="keyword">function</span>(e){
+        <span class="keyword">var</span> $target = $(e.target);
+        <span class="keyword">var</span> $row = $target.parents(<span class="string">'tr'</span>);
+
+        <span class="keyword">if</span> ($target.prop(<span class="string">'checked'</span>)) {
+          <span class="comment">//父节点全选中</span>
+          <span class="keyword">var</span> parentRow = $row.data(<span class="string">'parent'</span>);
+          <span class="keyword">while</span> (parentRow) {
+            tree.check(parentRow);
+            parentRow = parentRow.data(<span class="string">'parent'</span>);
+          }
+        } <span class="keyword">else</span> {
+          <span class="comment">//如果本层级没有其他项被选中，那么父节点取消选中</span>
+          <span class="keyword">var</span> parentRow = $row.data(<span class="string">'parent'</span>);
+          <span class="keyword">while</span> (parentRow) {
+            <span class="keyword">if</span> (!isOnlyChecked($row)) <span class="keyword">break</span>;
+
+            tree.unCheck(parentRow);
+            $row = parentRow;
+            parentRow = parentRow.data(<span class="string">'parent'</span>);
+          }
+        }
+      })
+    }
+  }).render();
+});
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre></div><h2 id="更改children配置">更改children配置</h2><div class="nico-iframe">
+<iframe src="iframe-more-6.html" allowtransparency="true" 
+frameborder="0" scrolling="0" height="250"></iframe></div><div class="highlight"><pre><code class="xml"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+seajs.use([<span class="string">'kjui/tree/1.1.0/tree'</span>], <span class="keyword">function</span>(Tree) {
+  <span class="keyword">new</span> Tree({
+    url: <span class="string">'./tree-children.json'</span>,
+    model: {
+      title: <span class="string">'title'</span>,
+      children: <span class="string">'group'</span>,
+      height: <span class="number">200</span>
+    }
+  }).render();
+});
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre></div><h2 id="不显示根节点">不显示根节点</h2><div class="nico-iframe">
+<iframe src="iframe-more-7.html" allowtransparency="true" 
+frameborder="0" scrolling="0" height="250"></iframe></div><div class="highlight"><pre><code class="xml"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+seajs.use([<span class="string">'kjui/tree/1.1.0/tree'</span>], <span class="keyword">function</span>(Tree) {
+  <span class="keyword">new</span> Tree({
+    url: <span class="string">'./tree.json'</span>,
+    model: {
+      title: <span class="string">'title'</span>,
+      showRoot: <span class="literal">false</span>,
+      height: <span class="number">200</span>
+    }
+  }).render();
+});
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre></div>
+  </div>
+</article>
+</div>
+      </div>
+      
+    </div>
+    <div id="footer-wrapper">
+      <footer>
+        <p class="powered"><a href="http://aralejs.org">Arale</a> •
+<a href="http://aliceui.org">Alice</a> •
+<a href="http://seajs.org">SeaJS</a> •
+<a href="https://spmjs.org">spmjs.org</a> •
+<a href="http://lab.lepture.com/nico/">nico</a>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
